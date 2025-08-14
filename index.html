@@ -1,63 +1,64 @@
-<form class="flex flex-col gap-6" id="formulario" enctype="multipart/form-data"    method="POST">
-  <label class="flex flex-col gap-3">
-    Nombres
-    <input 
-      type="text" 
-      name="nombres" 
-      placeholder="Ingrese los Nombres" 
-      class="border-2 border-gray-900 p-2" 
-      id="nombres" 
-      required>
-  </label>
+<!DOCTYPE html>
+<html lang="en">
 
-  <label class="flex flex-col gap-3">
-    Apellidos
-    <input 
-      type="text" 
-      name="apellidos" 
-      placeholder="Ingrese los Apellidos" 
-      class="border-2 border-gray-900 p-2" 
-      id="apellidos" 
-      required>
-  </label>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
 
-  <label class="flex flex-col gap-3">
-    Correo Electronico
-    <input 
-      type="email" 
-      name="correo" 
-      placeholder="Ingrese su correo electronico" 
-      class="border-2 border-gray-900 p-2" 
-      id="correo" 
-      required>
-  </label>
+<body>
 
-  <label class="flex flex-col gap-3">
-    Ingrese foto de licencia
-    <input 
-      type="file" 
-      name="files" 
-      class="p-3 text-black" 
-      id="fotoLicencia" 
-      accept="image/*" 
-      required>
-  </label>
 
-  <label class="flex flex-col gap-3">
-    Ingrese foto del seguro
-    <input 
-      type="file" 
-      name="files" 
-      class="p-3 text-black" 
-      id="fotoSeguro" 
-      accept="image/*" 
-      required>
-  </label>
 
-  <label class="flex justify-center items-center">
-    <input 
-      type="submit" 
-      value="Registrarse"
-      class="bg-blue-600 p-3 text-white rounded-xl hover:bg-blue-800 transition-all duration-300 cursor-pointer">
-  </label>
-</form>
+    <div class="flex md:flex-row flex-col justify-between h-screen w-screen" id="main">
+        <section class="md:flex hidden flex-col justify-start py-56 items-center" style="max-width: 50%;">
+            <h1 class="text-black text-right text-5xl font-bold">Asegura tu carro con Gaico Company</h1>
+        </section>
+
+        <div>
+            <section class="md:flex hidden flex-col justify-start py-80" style="max-width: 50%; padding-left: .10px;">
+                <h1 class="text-black text-right text-5xl font-bold">Bienvenido</h1>
+            </section>
+
+        </div>
+        <section class="flex justify-center items-center m-auto p-4 rounded-2xl bg-white bg-opacity-50">
+            <form class="flex flex-col gap-6" id="formulario" enctype="multipart/form-data">
+                <label class="flex flex-col gap-3">
+                    Nombres
+                    <input type="text" name="nombres" placeholder="Ingrese los Nombres"
+                        class="border-2 border-ray-900 p-2">
+                </label>
+                <label class="flex flex-col gap-3">
+                    Apellidos
+                    <input type="text" name="apellidos" placeholder="Ingrese los Apellidos"
+                        class="border-2 border-ray-900 p-2">
+                </label>
+                <label class="flex flex-col gap-3">
+                    Correo Electronico
+                    <input type="email" name="correo" placeholder="Ingrese su correo electronico"
+                        class="border-2 border-ray-900 p-2">
+                </label>
+                <label class="flex flex-col gap-3">
+                    Ingrese foto de licencia
+                    <input type="file" name="fotoLicencia" id="fotoLicencia" class="p-3 text-black" accept="image/*,.pdf">
+                </label>
+                <label class="flex flex-col gap-3">
+                    Ingrese foto del seguro
+                    <input type="file" name="fotoSeguro" id="fotoSeguro" class="p-3 text-black" accept="image/*,.pdf">
+                </label>
+                <label class="flex justify-center items-center">
+                    <input type="submit" value="Registrarse"
+                        class="bg-blue-600 p-3 text-white rounded-xl hover:bg-blue-800 transition-all duration-300 cursor-pointer">
+                </label>
+            </form>
+        </section>
+    </div>
+
+
+    <script src="./main.js"></script>
+</body>
+
+</html>
