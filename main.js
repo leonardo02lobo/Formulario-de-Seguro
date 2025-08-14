@@ -1,14 +1,27 @@
-const formulario = document.getElementById("formulario")
-const data = {}
+// main.js
+const form = document.querySelector('form');
 
-formulario.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const elementos = formulario.elements;
-    data["nombres"] = elementos[0].value;
-    data["apellidos"] = elementos[1].value;
-    data["correo"] = elementos[2].value;
-    data["fotoLicencia"] = elementos[3].value;
-    data["fotoSeguro"] = elementos[4].value;
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-    console.log(data);
+  const formData = new FormData(form);
+
+  try {
+    const response = await fetch('http://localhost:3000/api/registrar', {
+      method: 'POST',
+      body: formData
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert('✅ ' + result.mensaje);
+      form.reset();
+    } else {
+      alert('❌ Error: ' + result.error);
+    }
+  } catch (error) {
+    console.error('Error de conexión:', error);
+    alert('❌ No se pudo conectar al servidor');
+  }
 });
