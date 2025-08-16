@@ -1,49 +1,96 @@
-const form = document.getElementById('formulario');
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('formulario');
+  const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  
-  const formData = new FormData(form); // Usa el formulario directamente
-  
-  // Verifica que los archivos no excedan el tamaño
-  const fotoLicencia = form.querySelector('#fotoLicencia').files[0];
-  const fotoSeguro = form.querySelector('#fotoSeguro').files[0];
-  
-  if (fotoLicencia && fotoLicencia.size > 5 * 1024 * 1024) {
-    alert('La foto de licencia excede el tamaño máximo de 5MB');
-    return;
-  }
-  
-  if (fotoSeguro && fotoSeguro.size > 5 * 1024 * 1024) {
-    alert('La foto del seguro excede el tamaño máximo de 5MB');
-    return;
-  }
+  const domElements = {
+    fotoLicencia: document.getElementById('fotoLicencia'),
+    fotoSeguro: document.getElementById('fotoSeguro'),
+    licenciaPreview: document.getElementById('licencia-preview'),
+    seguroPreview: document.getElementById('seguro-preview')
+  };
 
-  try {
-    const response = await fetch('http://localhost:4000/api/FormData', {
-      method: 'POST',
-      body: formData
-    });
+  const validateFileSize = (file, fileType) => {
+    if (file && file.size > MAX_FILE_SIZE) {
+      alert(`La ${fileType} excede el tamaño máximo de 5MB`);
+      return false;
+    }
+    return true;
+  };
 
-    // Verifica si la respuesta es JSON
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      const text = await response.text();
-      throw new Error(text || 'Respuesta no válida del servidor');
+  const clearPreviews = () => {
+    domElements.licenciaPreview.classList.add('hidden');
+    domElements.seguroPreview.classList.add('hidden');
+  };
+
+  const validateForm = () => {
+    const requiredFields = [
+      { id: 'nombres-input', name: 'nombres' },
+      { id: 'apellidos-input', name: 'apellidos' },
+      { id: 'email-input', name: 'correo electrónico' },
+      { id: 'fotoLicencia', name: 'foto de licencia' },
+      { id: 'fotoSeguro', name: 'foto del seguro' }
+    ];
+
+    for (const field of requiredFields) {
+      const element = document.getElementById(field.id);
+      if (!element.value && !(element.files && element.files.length > 0)) {
+        alert(`Por favor complete el campo: ${field.name}`);
+        element.focus();
+        return false;
+      }
     }
 
-    const result = await response.json();
-    
-    if (!response.ok || !result.success) {
-      throw new Error(result.error || 'Error en el servidor');
+    // Validar formato de email
+    const email = document.getElementById('email-input').value;
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert('Por favor ingrese un correo electrónico válido');
+      return false;
     }
-    
-    console.log("Respuesta del servidor:", result);
-    alert('Formulario enviado correctamente');
-    form.reset(); // Limpia el formulario
-    
-  } catch (error) {
-    console.error("Error al enviar el formulario:", error);
-    alert(`Error: ${error.message}`);
-  }
+
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
+    const fotoLicencia = domElements.fotoLicencia.files[0];
+    const fotoSeguro = domElements.fotoSeguro.files[0];
+
+    if (!validateFileSize(fotoLicencia, 'foto de licencia')) return;
+    if (!validateFileSize(fotoSeguro, 'foto del seguro')) return;
+
+    try {
+      const formData = new FormData(form);
+      const response = await fetch('https://geico-conpany.onrender.com/api/FormData', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Error HTTP: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.error || 'Error en el procesamiento del formulario');
+      }
+
+      console.log("Respuesta exitosa del servidor:", result);
+
+      form.reset();
+      clearPreviews();
+      alert(currentLang === 'es' ? 'Formulario enviado con éxito' : 'Form submitted successfully');
+
+    } catch (error) {
+      console.error("Error en el envío del formulario:", error);
+      alert(`Error: ${error.message || 'Ocurrió un error al enviar el formulario'}`);
+    }
+  };
+
+  form.addEventListener('submit', handleSubmit);
+  form.addEventListener('reset', clearPreviews);
 });
